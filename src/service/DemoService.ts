@@ -1,6 +1,6 @@
 import {Injectable} from "../core"
 
-// @Injectable()
+@Injectable()
 export class DemoService {
     getName() {
         return 'test'

@@ -1,4 +1,4 @@
-import MetaData from "./meta-data";
+import {MetaData} from "./definition";
 
 const getMetaData: (target: object) => MetaData= function (target:object):MetaData {
     let meta = Reflect.getMetadata('metaData', target)
@@ -19,7 +19,6 @@ Controller.symbol =  Symbol('Controller')
 
 
 export enum RequestMethod { GET = 'get', POST = 'post',PUT = 'put',DELETE = 'delete'}
-
 export function RequestMapping(path: string, method?:RequestMethod):MethodDecorator {
     if(!method) method = RequestMethod.GET
     return function (target, name, descriptor) {
@@ -36,11 +35,12 @@ RequestMapping.symbol =  Symbol('RequestMapping')
 export function Injectable():ClassDecorator {
     return function (target) {
         let metaData = getMetaData(target.prototype)
-        metaData.addClassMetaData(Injectable.symbol, Symbol(target.name))
+        metaData.addClassMetaData(Injectable.symbol, {
+            key: Symbol(target.name)
+        })
     }
 }
 Injectable.symbol = Symbol('Injectable')
-
 
 export function inject():PropertyDecorator {
     return function (target, name) {
@@ -50,12 +50,3 @@ export function inject():PropertyDecorator {
     }
 }
 inject.symbol = Symbol('inject')
-
-
-export function MiddleWareFactory():ClassDecorator {
-    return function (target) {
-        let metaData = getMetaData(target.prototype)
-        metaData.addClassMetaData(MiddleWareFactory.symbol, true)
-    }
-}
-MiddleWareFactory.symbol = Symbol('MiddleWareFactory')

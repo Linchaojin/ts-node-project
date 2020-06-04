@@ -1,26 +1,21 @@
-import {MiddleWareFactory} from '../core'
+import {Injectable,middleware, MiddleWareInit } from '../core'
 import error from  'koa-json-error'
 import logger from 'koa-logger'
 import koaBody from 'koa-body'
+import Application from "koa";
 
-@MiddleWareFactory()
-export class MiddleWare {
+// @Injectable()
+export class MiddleWareFactory implements MiddleWareInit{
 
-    logger() {
-        return logger()
+
+    initGlobalMiddleWare(app: Application): void {
+        app.use(koaBody())
+        app.use(logger())
+        console.log('initGlobalMiddleWare')
     }
 
-    error() {
-        return error()
-    }
+    @middleware({urlPatterns: '/api', order: 1})
+    test(ctx, next) {
 
-    koaBody() {
-        return koaBody({
-            multipart: true,
-            formidable: {
-                maxFileSize: 200 * 1024 * 1024	// 设置上传文件大小最大限制，默认200M
-            }
-        })
     }
-
 }
