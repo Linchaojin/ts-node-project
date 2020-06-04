@@ -1,4 +1,3 @@
-
 import {Controller, RequestMapping, Injectable} from './decorator'
 import {InjectionFactory, ModuleScanner} from './definition'
 
