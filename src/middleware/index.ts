@@ -1,21 +1,14 @@
-import {Injectable,middleware, MiddleWareInit } from '../core'
-import error from  'koa-json-error'
+import {Injectable, IMiddleWare} from '../core'
 import logger from 'koa-logger'
 import koaBody from 'koa-body'
 import Application from "koa";
 
-// @Injectable()
-export class MiddleWareFactory implements MiddleWareInit{
+@Injectable()
+export class MiddleWareFactory implements IMiddleWare{
 
-
-    initGlobalMiddleWare(app: Application): void {
+    init(app: Application): void {
         app.use(koaBody())
         app.use(logger())
-        console.log('initGlobalMiddleWare')
-    }
-
-    @middleware({urlPatterns: '/api', order: 1})
-    test(ctx, next) {
-
+        console.log('init middleware')
     }
 }

@@ -37,6 +37,7 @@ export class ModuleBoot {
             })
         }
         this.initInjection()
+        this.injectionFactory.injectMiddleWare(this.app)
         this.initCtrl()
     }
     initInjection() {

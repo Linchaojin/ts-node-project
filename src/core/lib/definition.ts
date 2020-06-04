@@ -1,6 +1,7 @@
 import {Controller, inject, Injectable} from "./decorator"
 import fs from "fs";
 import {join} from "path";
+import Application from "koa";
 
 export class MetaData {
     classMetaData: object = {}
@@ -66,9 +67,22 @@ export class InjectionFactory {
         if (typeof provider === "function") {
             const opt = this.getInjectOption(provider.prototype)
             if (opt) {
+                const instance =  new provider()
                 const key = opt.key
-                this.instanceMap[key] = new provider()
+                if (typeof (instance as IMiddleWare).init === 'function') {
+                    this.middlewareMap[key] = instance
+                } else {
+                    this.instanceMap[key] = instance
+                }
             }
+        }
+    }
+    injectMiddleWare(app:Application) {
+        let ownKeys = Reflect.ownKeys(this.middlewareMap)
+        for (let i = 0; i < ownKeys.length; i++) {
+            const key = ownKeys[i]
+            const instance = this.middlewareMap[key] as IMiddleWare
+            instance.init(app)
         }
     }
     build(target:any) {
@@ -138,4 +152,8 @@ export class ModuleScanner {
         })
         return paths
     }
+}
+
+export interface IMiddleWare {
+    init(app: Application): void
 }
